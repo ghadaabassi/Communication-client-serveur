@@ -1,7 +1,8 @@
 import tkinter as tk
+
 import requests
 import json
-from tkinter import PhotoImage
+from PIL import Image, ImageTk
 
 
 class JsonRpcClient:
@@ -24,7 +25,7 @@ class JsonRpcClient:
             result = response.json().get("result")
 
             if result is not None:
-                result_message = f"   Resultat de {method}: {result} \n"
+                result_message = f"   Resultat de {method}: 15 DT -->  {result} \n"
                 client_gui.display_message(result_message)
             else:
                 error_message = f"Error: {response.json().get('error')}"
@@ -41,30 +42,31 @@ class JsonRpcClientGUI:
         self.url = url
 
         self.root = tk.Tk()
-        self.root.title("Conversion")
+        self.root.title("Conversion",)
+        self.root.configure(bg="white")
+        
+        image = Image.open('mn.jpg')
 
-        # Load the animated GIF and convert it to a PhotoImage
-        self.logo_image = PhotoImage(file='Money.gif').subsample(3, 2)
+        resized_image = image.resize((270, 270))
 
-        # Create a Label widget for the logo and position it on the left
-        self.logo_label = tk.Label(self.root, image=self.logo_image)
+        tk_image = ImageTk.PhotoImage(resized_image)
+        self.logo_image = tk_image
+        
+        self.logo_label = tk.Label(self.root, image=self.logo_image )
         self.logo_label.pack(side="left")
 
-        # Create a frame for the text and button
-        frame = tk.Frame(self.root)
-        frame.pack(side="left", padx=10)  # Adjust padx as needed
+        frame = tk.Frame(self.root , background="white")
+        
+        frame.pack(side="left", padx=10)
 
-        # Create a Text widget for displaying messages
         self.message_display = tk.Text(frame, height=15, width=70, font=("Arial", 16))
         self.message_display.pack()
 
-        # Create a button to make JSON-RPC requests and position it under the text
-        self.request_button = tk.Button(frame, text="Convert", command=self.make_requests, font=("Arial", 18))
+        self.request_button = tk.Button(frame, text="Convert", command=self.make_requests, font=("Arial", 18) , background="#fffff0")
         self.request_button.pack(side="bottom", pady=10)
 
 
     def make_requests(self):
-        # Clear previous messages
         self.message_display.delete(1.0, tk.END)
         self.display_message("\t\t\t Conversion du DT\n")
 
@@ -73,7 +75,6 @@ class JsonRpcClientGUI:
         client.make_request("ConvertEuro", {"a": 15})
 
     def display_message(self, message):
-        # Display messages in the Text widget
         self.message_display.insert(tk.END, f"{message}\n")
         self.message_display.see(tk.END)
 
